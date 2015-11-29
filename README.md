@@ -4,4 +4,7 @@ https://www.dropbox.com/s/yr8czy0bmta8q6x/Scripts.rar?dl=0
 
 
 It has been brougth to my attention that the installation has an error " Error: No valid host was found. There are not enough hosts available"
+
 At the moment I am working on fixing it, has something to do with Neutron config the Controller does not talk rigth with the Compute node.
+
+Partially fixed it, at the moment any instance attached to a public network interface works. Will fix the private network as well...
