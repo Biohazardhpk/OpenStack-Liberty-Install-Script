@@ -249,6 +249,8 @@ openstack endpoint create --region RegionOne \
   network public http://controller:9696
 openstack endpoint create --region RegionOne \
   network internal http://controller:9696
+openstack endpoint create --region RegionOne \
+  network admin http://controller:9696
 #Instal and config neutron on controller
 apt-get install neutron-server neutron-plugin-ml2 \
   neutron-plugin-linuxbridge-agent neutron-l3-agent neutron-dhcp-agent \
@@ -294,8 +296,8 @@ crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_gre tunnel_id_range
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini securitygroup enable_ipset True
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini linux_bridge physical_interface_mappings public:eth1
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini gre enable_gre True
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini local_ip 10.0.0.11
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini l2_population True
+crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini gre local_ip 10.0.0.11
+crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini gre l2_population True
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini agent prevent_arp_spoofing True
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup enable_security_group True
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup firewall_driver neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
@@ -375,3 +377,4 @@ service neutron-l3-agent restart
 service apache2 reload
 nova service-list
 neutron agent-list
+
