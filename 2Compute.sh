@@ -15,7 +15,7 @@ crudini --set /etc/nova/nova.conf keystone_authtoken user_domain_id default
 crudini --set /etc/nova/nova.conf keystone_authtoken project_name service
 crudini --set /etc/nova/nova.conf keystone_authtoken username nova
 crudini --set /etc/nova/nova.conf keystone_authtoken password NOVA_PASS
-crudini --set /etc/nova/nova.conf DEFAULT my_ip 10.0.0.11
+crudini --set /etc/nova/nova.conf DEFAULT my_ip 10.0.0.21
 crudini --set /etc/nova/nova.conf DEFAULT network_api_class nova.network.neutronv2.api.API
 crudini --set /etc/nova/nova.conf DEFAULT security_group_api neutron
 crudini --set /etc/nova/nova.conf DEFAULT linuxnet_interface_driver nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver
@@ -50,8 +50,8 @@ crudini --set /etc/neutron/neutron.conf DEFAULT verbose True
 #Config linux bridege
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini linux_bridge physical_interface_mappings public:eth1
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini gre enable_gre True
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini local_ip 10.0.0.11
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini l2_population True
+crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini gre local_ip 10.0.0.11
+crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini gre l2_population True
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini agent prevent_arp_spoofing True
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup enable_security_group True
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup firewall_driver neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
@@ -67,3 +67,4 @@ crudini --set /etc/nova/nova.conf neutron username neutron
 crudini --set /etc/nova/nova.conf neutron password NEUTRON_PASS
 service nova-compute restart
 service neutron-plugin-linuxbridge-agent restart
+
