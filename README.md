@@ -1,14 +1,5 @@
-Please download the files provided and visit the Wiki section for guidance.
-If the files from here do not work as a script please refer to this link:
-https://www.dropbox.com/s/yr8czy0bmta8q6x/Scripts.rar?dl=0
-
-
-It has been brougth to my attention that the installation has an error " Error: No valid host was found. There are not enough hosts available"
-
-At the moment I am working on fixing it, has something to do with Neutron config the Controller does not talk rigth with the Compute node.
-
-Partially fixed it, at the moment any instance attached to a public network interface works. Will fix the private network as well...
-
+# Please download the files provided and follow the guide.
+##If the files from here do not work as a script please refer to this link: https://www.dropbox.com/s/yr8czy0bmta8q6x/Scripts.rar?dl=0
 
 
 # Welcome to the OpenStack-Liberty-Script install wiki!
@@ -16,6 +7,8 @@ Partially fixed it, at the moment any instance attached to a public network inte
 - [VMware Workstation](https://www.vmware.com/products/workstation)
 - [MobaXterm](http://mobaxterm.mobatek.net/download.html)
 - Optional [Notepad++](https://notepad-plus-plus.org/) in case you want to edit a file.
+
+Note: Make a PortFowarding rule for SSH on the NAT network in VMware for the two VM's
 
 ## Hardware Infrastructure
 For the deployment two virtual machines will be necessary with two NIC cards attached:
@@ -383,9 +376,32 @@ Note:If you reboot your VM's in order to re-spring the cloud you must run:
 
     ./compute-restart.sh
 
+# Test your new cloud!
+To give the newly cloud a test-drive just run this:
+
+    ./instance_test.sh
+
+- At the prompt just enter the corresponding network configuration to the eth1 of your VM's
+
+In my case are the following:
+
+     Public network with cidr
+         10.3.3.0/24
+     Enter start IP address
+         10.3.3.100
+     Enter end IP address
+         10.3.3.200
+     Enter DNS 
+         95.77.94.88
+     Enter gateway
+         10.3.3.1
+
+- After the script finishes you can access the two instances from the console inside Horizon (make a PortFowarding rule for it on the NAT network in VMware)
+- The public instace can also be accessed trough ssh from your pc.
+- The credentials for the two instances are: cirros/cubswin:)
+
 # This tutorial will be continued with:
 - Configuring the network for internet access to the instances
-- Launching an instance
 - Adding Murano and App-Catalog **Need some help, if can, please DO!**
 - Second Compute node
 - Who knows maybe even PIZZA!
