@@ -231,6 +231,8 @@ Note: The required files are:
 
 >contoller-restart.sh
 
+>instance_test.sh
+
 >wsgi-keystone.conf   
               
 
@@ -307,8 +309,6 @@ Note: The required files are:
 >1Compute.sh
 
 >2Compute.sh (if you modify the passwords or IP copy this from the compute node)
-
->modconf.sh
 
 >compute-restart.sh
 
