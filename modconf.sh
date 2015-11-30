@@ -1,9 +1,11 @@
 #!/bin/bash
 # Ask the user for the management ip address
-echo Hello, Please insert the management IP address!
-read varmanagIP
-sed -i 's/10.0.0.11/$varmanagIP/g' 2Controller
-sed -i 's/10.0.0.11/$varmanagIP/g' 2Compute
+echo Hello, Please insert the Controller management IP address!
+read varmanagIPc
+sed -i 's/10.0.0.11/$varmanagIPcon/g' 2Controller
+echo Hello, Please insert the Compute management IP address!
+read varmanagIPcom
+sed -i 's/10.0.0.11/$varmanagIPcom/g' 2Compute
 echo Your management interface IP  address was set to $varmanagIP
 echo Hello, Please insert the mysql root pass!
 read varmysqlrpass
