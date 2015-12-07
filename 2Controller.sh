@@ -136,7 +136,7 @@ GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY 'GLANCE_DBPASS';
 MYSQL_SCRIPT
 source admin-openrc.sh
 #Create the service credentials, complete these steps
-openstack user create --domain default --password GLANCE_DBPASS glance
+openstack user create --domain default --password GLANCE_PASS glance
 openstack role add --project service --user glance admin
 openstack service create --name glance \
   --description "OpenStack Image service" image
@@ -158,7 +158,7 @@ crudini --set /etc/glance/glance-api.conf keystone_authtoken project_domain_id d
 crudini --set /etc/glance/glance-api.conf keystone_authtoken user_domain_id default
 crudini --set /etc/glance/glance-api.conf keystone_authtoken project_name service
 crudini --set /etc/glance/glance-api.conf keystone_authtoken username glance
-crudini --set /etc/glance/glance-api.conf keystone_authtoken password GLANCE_DBPASS
+crudini --set /etc/glance/glance-api.conf keystone_authtoken password GLANCE_PASS
 crudini --set /etc/glance/glance-api.conf paste_deploy flavor keystone
 crudini --set /etc/glance/glance-api.conf glance_store default_store file
 crudini --set /etc/glance/glance-api.conf glance_store filesystem_store_datadir /var/lib/glance/images/
@@ -174,7 +174,7 @@ crudini --set /etc/glance/glance-registry.conf keystone_authtoken project_domain
 crudini --set /etc/glance/glance-registry.conf keystone_authtoken user_domain_id default
 crudini --set /etc/glance/glance-registry.conf keystone_authtoken project_name service
 crudini --set /etc/glance/glance-registry.conf keystone_authtoken username glance
-crudini --set /etc/glance/glance-registry.conf keystone_authtoken password GLANCE_DBPASS
+crudini --set /etc/glance/glance-registry.conf keystone_authtoken password GLANCE_PASS
 crudini --set /etc/glance/glance-registry.conf paste_deploy flavor keystone
 crudini --set /etc/glance/glance-registry.conf DEFAULT notification_driver noop
 crudini --set /etc/glance/glance-registry.conf DEFAULT verbose True
@@ -395,3 +395,4 @@ service apache2 reload
 source admin-openrc.sh
 nova service-list
 neutron agent-list
+
