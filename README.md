@@ -3,7 +3,7 @@
 https://www.dropbox.com/s/yr8czy0bmta8q6x/Scripts.rar?dl=0
 
 
-# Welcome to the OpenStack-Liberty-Script install wiki! (this installation is no following the official documentation all the way the SDN inside OpenStack is using GRE with OVS)
+# Welcome to the OpenStack-Liberty-Script install wiki! (this installation is following the official documentation therefore the SDN inside OpenStack is using VXLAN with linux bridge)
 ## Necessary software
 - [VMware Workstation](https://www.vmware.com/products/workstation)
 - [MobaXterm](http://mobaxterm.mobatek.net/download.html)
