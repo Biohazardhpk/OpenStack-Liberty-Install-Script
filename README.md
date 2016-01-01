@@ -17,7 +17,7 @@ For the deployment two virtual machines will be necessary with two NIC cards att
 - One for Internet access and data traffic between multiple Compute nodes
 
 ### The topology is presented in the figure below
-![](http://s20.postimg.org/r77vcrssd/Network_config.png)
+![](http://postimg.org/image/gksjbl88p/)
 
 ## Machine configuration
 - If you want to have a decent running speed for the cloud environment I recommend that for each virtual machine to allocate at least 4 GB of RAM memory and a virtual HDD of 320 GB.
