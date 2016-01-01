@@ -261,7 +261,9 @@ Note: The required files are:
 
 >instance_test.sh
 
->wsgi-keystone.conf   
+>wsgi-keystone.conf  
+
+>interfaces
               
 
 ___
@@ -291,7 +293,7 @@ ___
     ./modconf.sh
 
 Note: in the prompt you will be asked to input passwords for modules that are not installed like Ceilometer. You can skip those because the script is made for a more complete future installation.
-
+Note: if you have a diferent configuration for the eth2 of the controller node you should edit the interfaces file that you previously copyed.
 ___
 
 After the modconf.sh finishes or if you choose to go with the settled passwords and IP you can continue by running the second script:
@@ -340,6 +342,7 @@ Note: The required files are:
 
 >compute-restart.sh
 
+Note: if you have modified your installation regarding ip addresses please copy 2Compute.sh from your Controller machine.
 ___
 
 Make all the files executable:
@@ -428,9 +431,9 @@ In my case are the following:
 - After the script finishes you can access the two instances from the console inside Horizon (make a PortFowarding rule for it on the NAT network in VMware)
 - The public instace can also be accessed trough ssh from your pc.
 - The credentials for the two instances are: cirros/cubswin:)
+- The instances should have internet access
 
 # This tutorial will be continued with:
-- Configuring the network for internet access to the instances
 - Adding Murano and App-Catalog **Need some help, if can, please DO!**
 - Second Compute node
 - Who knows maybe even PIZZA!
