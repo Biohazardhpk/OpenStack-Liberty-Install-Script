@@ -18,7 +18,7 @@ For the deployment two virtual machines will be necessary with three NIC cards a
 - One for Internet access
 
 ### The topology is presented in the figure below
-![](http://s20.postimg.org/l5cn5dtod/Network_config.png)
+![](http://s20.postimg.org/r77vcrssd/Network_config.png)
 
 ## Machine configuration
 - If you want to have a decent running speed for the cloud environment I recommend that for each virtual machine to allocate at least 4 GB of RAM memory and a virtual HDD of 320 GB.
