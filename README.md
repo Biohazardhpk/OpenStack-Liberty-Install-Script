@@ -12,7 +12,7 @@ https://www.dropbox.com/s/yr8czy0bmta8q6x/Scripts.rar?dl=0
 Note: Make a PortFowarding rule for SSH on the NAT network in VMware for the two VM's
 
 ## Hardware Infrastructure
-For the deployment two virtual machines will be necessary with two NIC cards attached:
+For the deployment two virtual machines will be necessary with three NIC cards attached:
 - One for managing traffic between the Controller and the Compute nodes
 - One for data traffic between multiple Compute nodes
 - One for Internet access
@@ -38,7 +38,7 @@ A graphical environment is optional since most of the work will be carried out t
 
 ### Controller
 
-- The controller node has two Network Interfaces: eth0 (used for management network) and eth1 is external.
+- The controller node has three Network Interfaces: eth0 (used for management network),  eth1 (used for Data between Compute nodes) and eth2 which is external.
 
 ___
 
@@ -75,19 +75,30 @@ Edit network settings to configure the interfaces eth0 and eth1:
 
     vi /etc/network/interfaces
 
-    # The primary network interface
-    auto eth0
-    iface eth0 inet static
-            address 10.0.0.11
+     # The management network interface
+     auto eth0
+     iface eth0 inet static
+            address 10.0.0.21
             netmask 255.255.255.0
-            gateway 10.0.0.1
-            dns-nameserver 10.0.0.1
+            network 10.0.0.0
 
-    # The public network interface
-    auto eth1
-    iface  eth1 inet manual
-        up ip link set dev $IFACE up
-        down ip link set dev $IFACE down
+
+     # VM traffic interface
+     auto eth1
+     iface eth1 inet static
+         address 10.0.1.21
+         netmask 255.255.255.0
+         network 10.0.1.0
+
+
+     # The public network interface
+     auto eth2
+     iface eth2 inet static
+         address 10.3.3.11
+         netmask 255.255.255.0
+         network 10.3.3.0
+         gateway 10.3.3.1
+         dns-nameservers 8.8.8.8 8.8.4.4
 
 
 ### Compute1
