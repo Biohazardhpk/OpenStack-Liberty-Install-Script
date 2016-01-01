@@ -78,7 +78,7 @@ Edit network settings to configure the interfaces eth0 and eth1:
      # The management network interface
      auto eth0
      iface eth0 inet static
-            address 10.0.0.21
+            address 10.0.0.11
             netmask 255.255.255.0
             network 10.0.0.0
 
@@ -86,7 +86,7 @@ Edit network settings to configure the interfaces eth0 and eth1:
      # VM traffic interface
      auto eth1
      iface eth1 inet static
-         address 10.0.1.21
+         address 10.0.1.11
          netmask 255.255.255.0
          network 10.0.1.0
 
@@ -103,7 +103,7 @@ Edit network settings to configure the interfaces eth0 and eth1:
 
 ### Compute1
 
-- The compute node has two Network Interfaces: eth0 (used for management network) and eth1 is external.
+- The compute node has two Network Interfaces: eeth0 (used for management network),  eth1 (used for Data between Compute nodes) and eth2 which is external.
 
 ___
 
@@ -140,19 +140,30 @@ Edit network settings to configure the interfaces eth0 and eth1:
 
     vi /etc/network/interfaces
 
-    # The management network interface
-    auto eth0
-    iface eth0 inet static
+     # The management network interface
+     auto eth0
+     iface eth0 inet static
             address 10.0.0.21
             netmask 255.255.255.0
-            gateway 10.0.0.1
-            dns-nameserver 10.0.0.1
+            network 10.0.0.0
 
-    # The public network interface
-    auto eth1
-    iface  eth1 inet manual
-      up ip link set dev $IFACE up
-      down ip link set dev $IFACE down
+
+     # VM traffic interface
+     auto eth1
+     iface eth1 inet static
+         address 10.0.1.21
+         netmask 255.255.255.0
+         network 10.0.1.0
+
+
+     # The public network interface
+     auto eth2
+     iface eth2 inet static
+         address 10.3.3.21
+         netmask 255.255.255.0
+         network 10.3.3.0
+         gateway 10.3.3.1
+         dns-nameservers 8.8.8.8 8.8.4.4
 
 # OpenStack environment details
 
