@@ -14,10 +14,11 @@ Note: Make a PortFowarding rule for SSH on the NAT network in VMware for the two
 ## Hardware Infrastructure
 For the deployment two virtual machines will be necessary with two NIC cards attached:
 - One for managing traffic between the Controller and the Compute nodes
-- One for Internet access and data traffic between multiple Compute nodes
+- One for data traffic between multiple Compute nodes
+- One for Internet access
 
 ### The topology is presented in the figure below
-![](http://postimg.org/image/gksjbl88p/)
+![](http://s20.postimg.org/xlbfk9la5/Network_config_OVS.png)
 
 ## Machine configuration
 - If you want to have a decent running speed for the cloud environment I recommend that for each virtual machine to allocate at least 4 GB of RAM memory and a virtual HDD of 320 GB.
