@@ -21,8 +21,9 @@ For the deployment two virtual machines will be necessary with two NIC cards att
 ![](http://s20.postimg.org/xlbfk9la5/Network_config_OVS.png)
 
 Note : In my case the two eth2 interfaces were configured as follows:
-                                                                        Controller-10.3.3.11
-                                                                        Compute1-10.3.3.21
+
+  Controller-10.3.3.11
+  Compute1-10.3.3.21
 
 ## Machine configuration
 - If you want to have a decent running speed for the cloud environment I recommend that for each virtual machine to allocate at least 4 GB of RAM memory and a virtual HDD of 320 GB.
