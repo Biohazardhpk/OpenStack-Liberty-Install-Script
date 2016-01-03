@@ -1,7 +1,4 @@
 # To install just download the files provided and follow the guide.
-##If the files from here do not work as a script please refer to this link: 
-https://www.dropbox.com/s/yr8czy0bmta8q6x/Scripts.rar?dl=0
-
 
 # Welcome to the OpenStack-Liberty-Script install wiki! (this installation is not following the official documentation all the way the SDN inside OpenStack is using GRE with OVS)
 ## Necessary software
