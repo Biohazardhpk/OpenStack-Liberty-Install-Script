@@ -1,0 +1,35 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+#Management
+auto eth0
+iface eth0 inet static
+        address 10.0.0.11
+        netmask 255.255.255.0
+        network 10.0.0.0
+
+#Vm trafic
+auto eth1
+iface eth1 inet static
+        address 10.0.1.11
+        netmask 255.255.255.0
+        network 10.0.1.0
+
+
+#External
+auto eth2
+iface eth2 inet manual
+    up ip link set dev $IFACE up
+    down ip link set dev $IFACE down
+
+auto br-ex
+iface br-ex inet static
+        address 10.3.3.11
+        netmask 255.255.255.0
+        network 10.3.3.0
+        gateway 10.3.3.1
+        dns-nameservers 95.77.94.88 78.96.7.88
