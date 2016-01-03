@@ -3,7 +3,7 @@
 https://www.dropbox.com/s/yr8czy0bmta8q6x/Scripts.rar?dl=0
 
 
-# Welcome to the OpenStack-Liberty-Script install wiki! (this installation is following the official documentation therefore the SDN inside OpenStack is using VXLAN with linux bridge)
+# Welcome to the OpenStack-Liberty-Script install wiki! (this installation is not following the official documentation all the way the SDN inside OpenStack is using GRE with OVS)
 ## Necessary software
 - [VMware Workstation](https://www.vmware.com/products/workstation)
 - [MobaXterm](http://mobaxterm.mobatek.net/download.html)
@@ -18,7 +18,12 @@ For the deployment two virtual machines will be necessary with three NIC cards a
 - One for Internet access
 
 ### The topology is presented in the figure below
-![](http://s20.postimg.org/r77vcrssd/Network_config.png)
+![](http://s20.postimg.org/xlbfk9la5/Network_config_OVS.png)
+
+Note : In my case the two eth2 interfaces were configured as follows:
+
+    Controller-10.3.3.11
+    Compute1-10.3.3.21
 
 ## Machine configuration
 - If you want to have a decent running speed for the cloud environment I recommend that for each virtual machine to allocate at least 4 GB of RAM memory and a virtual HDD of 320 GB.
@@ -33,7 +38,7 @@ A graphical environment is optional since most of the work will be carried out t
 
 ### Controller
 
-- The controller node has two Network Interfaces: eth0 (used for management network) and eth1 is external.
+- The controller node has three Network Interfaces: eth0 (used for management network),  eth1 (used for Data between Compute nodes) and eth2 which is external.
 
 ___
 
@@ -70,24 +75,35 @@ Edit network settings to configure the interfaces eth0 and eth1:
 
     vi /etc/network/interfaces
 
-    # The primary network interface
-    auto eth0
-    iface eth0 inet static
+     # The management network interface
+     auto eth0
+     iface eth0 inet static
             address 10.0.0.11
             netmask 255.255.255.0
-            gateway 10.0.0.1
-            dns-nameserver 10.0.0.1
+            network 10.0.0.0
 
-    # The public network interface
-    auto eth1
-    iface  eth1 inet manual
-        up ip link set dev $IFACE up
-        down ip link set dev $IFACE down
+
+     # VM traffic interface
+     auto eth1
+     iface eth1 inet static
+         address 10.0.1.11
+         netmask 255.255.255.0
+         network 10.0.1.0
+
+
+     # The public network interface
+     auto eth2
+     iface eth2 inet static
+         address 10.3.3.11
+         netmask 255.255.255.0
+         network 10.3.3.0
+         gateway 10.3.3.1
+         dns-nameservers 8.8.8.8 8.8.4.4
 
 
 ### Compute1
 
-- The compute node has two Network Interfaces: eth0 (used for management network) and eth1 is external.
+- The compute node has two Network Interfaces: eeth0 (used for management network),  eth1 (used for Data between Compute nodes) and eth2 which is external.
 
 ___
 
@@ -124,19 +140,30 @@ Edit network settings to configure the interfaces eth0 and eth1:
 
     vi /etc/network/interfaces
 
-    # The management network interface
-    auto eth0
-    iface eth0 inet static
+     # The management network interface
+     auto eth0
+     iface eth0 inet static
             address 10.0.0.21
             netmask 255.255.255.0
-            gateway 10.0.0.1
-            dns-nameserver 10.0.0.1
+            network 10.0.0.0
 
-    # The public network interface
-    auto eth1
-    iface  eth1 inet manual
-      up ip link set dev $IFACE up
-      down ip link set dev $IFACE down
+
+     # VM traffic interface
+     auto eth1
+     iface eth1 inet static
+         address 10.0.1.21
+         netmask 255.255.255.0
+         network 10.0.1.0
+
+
+     # The public network interface
+     auto eth2
+     iface eth2 inet static
+         address 10.3.3.21
+         netmask 255.255.255.0
+         network 10.3.3.0
+         gateway 10.3.3.1
+         dns-nameservers 8.8.8.8 8.8.4.4
 
 # OpenStack environment details
 
@@ -234,7 +261,9 @@ Note: The required files are:
 
 >instance_test.sh
 
->wsgi-keystone.conf   
+>wsgi-keystone.conf  
+
+>interfaces
               
 
 ___
@@ -264,7 +293,7 @@ ___
     ./modconf.sh
 
 Note: in the prompt you will be asked to input passwords for modules that are not installed like Ceilometer. You can skip those because the script is made for a more complete future installation.
-
+Note: if you have a diferent configuration for the eth2 of the controller node you should edit the interfaces file that you previously copyed.
 ___
 
 After the modconf.sh finishes or if you choose to go with the settled passwords and IP you can continue by running the second script:
@@ -280,7 +309,7 @@ The prompt is displayed bellow:
 Go have a beer! Come back in 10 minutes!
 If everything goes well you should end up with this on your screen:
 
-![](http://s20.postimg.org/h99f3mlbx/controller_output.png)
+![](http://s20.postimg.org/71iui4kql/controller_OVS.png)
 
 ## Compute node
 Copy the required files:
@@ -313,6 +342,7 @@ Note: The required files are:
 
 >compute-restart.sh
 
+Note: if you have modified your installation regarding ip addresses please copy 2Compute.sh from your Controller machine.
 ___
 
 Make all the files executable:
@@ -401,9 +431,9 @@ In my case are the following:
 - After the script finishes you can access the two instances from the console inside Horizon (make a PortFowarding rule for it on the NAT network in VMware)
 - The public instace can also be accessed trough ssh from your pc.
 - The credentials for the two instances are: cirros/cubswin:)
+- The instances should have internet access
 
 # This tutorial will be continued with:
-- Configuring the network for internet access to the instances
 - Adding Murano and App-Catalog **Need some help, if can, please DO!**
 - Second Compute node
 - Who knows maybe even PIZZA!
