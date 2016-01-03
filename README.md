@@ -377,7 +377,7 @@ If everything goes well after the installation you should enter in the Controlle
 
 and end up with this:    
 
-![](http://s20.postimg.org/6npjrmf0d/controller_final.png)
+![](http://s20.postimg.org/d2hyouynx/Ovs_final.png)
 
 # Congratulation! 
 - You now have an OpenStack environment to play with.
@@ -388,7 +388,7 @@ To access it enter in your browser:
 Note: If you modified the IP address for the management interface of the Controller please enter that IP.
 If not you should end up with this:
 
-![](http://s20.postimg.org/d2hyouynx/Ovs_final.png)
+![](http://s20.postimg.org/ie3h907st/openstack_login.png)
 
 
 - The credentials if the environment was not modified are:
