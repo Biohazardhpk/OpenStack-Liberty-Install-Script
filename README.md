@@ -293,6 +293,7 @@ ___
     ./modconf.sh
 
 Note: in the prompt you will be asked to input passwords for modules that are not installed like Ceilometer. You can skip those because the script is made for a more complete future installation.
+
 Note: if you have a diferent configuration for the eth2 of the controller node you should edit the interfaces file that you previously copyed.
 ___
 
@@ -387,7 +388,7 @@ To access it enter in your browser:
 Note: If you modified the IP address for the management interface of the Controller please enter that IP.
 If not you should end up with this:
 
-![](http://s20.postimg.org/ie3h907st/openstack_login.png)
+![](http://s20.postimg.org/d2hyouynx/Ovs_final.png)
 
 
 - The credentials if the environment was not modified are:
@@ -431,7 +432,7 @@ In my case are the following:
 - After the script finishes you can access the two instances from the console inside Horizon (make a PortFowarding rule for it on the NAT network in VMware)
 - The public instace can also be accessed trough ssh from your pc.
 - The credentials for the two instances are: cirros/cubswin:)
-- The instances should have internet access
+- The instances have internet access
 
 # This tutorial will be continued with:
 - Adding Murano and App-Catalog **Need some help, if can, please DO!**
