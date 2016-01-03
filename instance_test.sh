@@ -32,16 +32,15 @@ source demo-openrc.sh
 neutron router-create router
 neutron router-interface-add router private
 neutron router-gateway-set router public
-#Create public instance
-neutron net-list
-echo -n "Copy public network ID > "
-read PUBLIC_NET_ID
-nova boot public-instance --flavor m1.tiny --image cirros --nic net-id=$PUBLIC_NET_ID --security-group default
+#Create floating IP
+neutron floatingip-create public
 #Create private instance
 source demo-openrc.sh
 neutron net-list
 echo -n "Copy private network ID > "
 read PRIVATE_NET_ID
 nova boot private-instance --flavor m1.tiny --image cirros --nic net-id=$PRIVATE_NET_ID --security-group default
+#Associate floating IP
+nova floating-ip-associate private-instance neutron $(neutron floatingip-list | awk 'NR==4 {print$6}')
 #Check them
 nova list
