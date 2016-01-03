@@ -6,6 +6,8 @@ apt-get install mariadb-server python-pymysql -y
 #Will be prompted for pass generaly use stack
 #Install crudini./
 apt-get install crudini -y
+#Xauthority shit
+chmod 0600 ~/.Xauthority
 #Create and edit the /etc/mysql/conf.d/mysqld_openstack.cnf file
 touch /etc/mysql/conf.d/mysqld_openstack.cnf
 crudini --set /etc/mysql/conf.d/mysqld_openstack.cnf mysqld bind-address 10.0.0.11
@@ -236,7 +238,7 @@ crudini --set /etc/nova/nova.conf keystone_authtoken password NOVA_PASS
 crudini --set /etc/nova/nova.conf DEFAULT my_ip 10.0.0.11
 crudini --set /etc/nova/nova.conf DEFAULT network_api_class nova.network.neutronv2.api.API
 crudini --set /etc/nova/nova.conf DEFAULT security_group_api neutron
-crudini --set /etc/nova/nova.conf DEFAULT linuxnet_interface_driver nova.network.linux_net.NeutronLinuxBridgeInterfaceDriver
+crudini --set /etc/nova/nova.conf DEFAULT linuxnet_interface_driver nova.network.linux_net.LinuxOVSInterfaceDriver
 crudini --set /etc/nova/nova.conf DEFAULT firewall_driver nova.virt.firewall.NoopFirewallDriver
 crudini --set /etc/nova/nova.conf vnc vncserver_listen 10.0.0.11
 crudini --set /etc/nova/nova.conf vnc vncserver_proxyclient_address 10.0.0.11
@@ -259,6 +261,15 @@ nova service-list
 nova image-list
 #Add the Networking service
 #Prerequisites
+#Network packets forward
+sed -i 's/#net.ipv4.conf.default.rp_filter=1/net.ipv4.conf.default.rp_filter=0/g' /etc/sysctl.conf
+sed -i 's/#net.ipv4.conf.all.rp_filter=1/net.ipv4.conf.all.rp_filter=0/g' /etc/sysctl.conf
+sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
+echo "net.bridge.bridge-nf-call-arptables=1" >> /etc/sysctl.conf
+echo "net.bridge.bridge-nf-call-iptables=1" >> /etc/sysctl.conf
+echo "net.bridge.bridge-nf-call-ip6tables=1" >> /etc/sysctl.conf
+sysctl -p
+#Conf Database
 mysql -u root --password=stack <<MYSQL_SCRIPT 
 CREATE DATABASE neutron;
 GRANT ALL PRIVILEGES ON neutron.* TO neutron@'localhost' IDENTIFIED BY 'NEUTRON_DBPASS';
@@ -279,8 +290,9 @@ openstack endpoint create --region RegionOne \
 #Networking Option 2: Self-service networks
 #Instal and config neutron on controller
 apt-get install neutron-server neutron-plugin-ml2 \
-  neutron-plugin-linuxbridge-agent neutron-l3-agent neutron-dhcp-agent \
-  neutron-metadata-agent python-neutronclient -y
+neutron-plugin-openvswitch neutron-plugin-openvswitch-agent \
+neutron-l3-agent neutron-dhcp-agent \
+neutron-metadata-agent python-neutronclient -y
 #Configure the api and nova for neutron
 crudini --set /etc/neutron/neutron.conf database connection mysql+pymysql://neutron:NEUTRON_DBPASS@controller/neutron
 crudini --set /etc/neutron/neutron.conf DEFAULT core_plugin ml2
@@ -313,35 +325,40 @@ crudini --set /etc/neutron/neutron.conf nova username nova
 crudini --set /etc/neutron/neutron.conf nova password NOVA_PASS
 crudini --set /etc/neutron/neutron.conf DEFAULT verbose True
 #Ml2 plugin config, layer 3 and dhcp
-crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 type_drivers flat,vlan,vxlan
-crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 tenant_network_types vxlan
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 type_drivers flat,gre
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 tenant_network_types gre
 #The Linux bridge agent only supports VXLAN overlay networks.
-crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 mechanism_drivers linuxbridge,l2population
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 mechanism_drivers openvswitch
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 extension_drivers port_security
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_flat flat_networks public
-crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_vxlan vni_ranges 1:1000
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_gre tunnel_id_ranges 1:1000
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini securitygroup enable_ipset True
-#Configure the Linux bridge agent
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini linux_bridge physical_interface_mappings public:eth1
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan enable_vxlan True
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan local_ip 10.0.0.11
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan l2_population True
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini agent prevent_arp_spoofing True
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup enable_security_group True
-crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup firewall_driver neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini securitygroup firewall_driver neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini securitygroup enable_security_group True
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ovs local_ip 10.0.1.11
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ovs enable_tunneling true
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ovs bridge_mappings public:br-ex
+crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini agent tunnel_types gre
 #Configure the layer-3 agent
-crudini --set /etc/neutron/l3_agent.ini DEFAULT interface_driver neutron.agent.linux.interface.BridgeInterfaceDriver
-crudini --set /etc/neutron/l3_agent.ini DEFAULT external_network_bridge 
+crudini --del /etc/neutron/l3_agent.ini DEFAULT
+crudini --set /etc/neutron/l3_agent.ini DEFAULT interface_driver neutron.agent.linux.interface.OVSInterfaceDriver
+crudini --set /etc/neutron/l3_agent.ini DEFAULT use_namespaces True
+crudini --set /etc/neutron/l3_agent.ini DEFAULT router_delete_namespaces True
+crudini --set /etc/neutron/l3_agent.ini DEFAULT external_network_bridge br-ex
 crudini --set /etc/neutron/l3_agent.ini DEFAULT verbose True
 #Configure the DHCP agent
-crudini --set /etc/neutron/dhcp_agent.ini DEFAULT interface_driver neutron.agent.linux.interface.BridgeInterfaceDriver
+crudini --del /etc/neutron/dhcp_agent.ini DEFAULT
+crudini --set /etc/neutron/dhcp_agent.ini DEFAULT interface_driver neutron.agent.linux.interface.OVSInterfaceDriver
 crudini --set /etc/neutron/dhcp_agent.ini DEFAULT dhcp_driver neutron.agent.linux.dhcp.Dnsmasq
 crudini --set /etc/neutron/dhcp_agent.ini DEFAULT enable_isolated_metadata True
 crudini --set /etc/neutron/dhcp_agent.ini DEFAULT verbose True
+crudini --set /etc/neutron/dhcp_agent.ini DEFAULT use_namespaces True
+crudini --set /etc/neutron/dhcp_agent.ini DEFAULT dhcp_delete_namespaces True
 crudini --set /etc/neutron/dhcp_agent.ini DEFAULT dnsmasq_config_file /etc/neutron/dnsmasq-neutron.conf
 #Create and set DHCP
 touch /etc/neutron/dnsmasq-neutron.conf
 echo "dhcp-option-force=26,1450" >> /etc/neutron/dnsmasq-neutron.conf
+pkill dnsmasq
 #Config metadata
 crudini --set /etc/neutron/metadata_agent.ini DEFAULT auth_uri http://controller:5000
 crudini --set /etc/neutron/metadata_agent.ini DEFAULT auth_url http://controller:35357
@@ -373,8 +390,20 @@ su -s /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf \
   --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head" neutron
 #Restart the Networking and Compute services.
 service nova-api restart
+#Add the OVS config for the interfaces
+service openvswitch-switch restart
+ovs-vsctl add-br br-ex
+#Here is eth2 if there are different names this should be changed or interface numbers
+ovs-vsctl add-port br-ex eth2
+# the interfaces file should be configured accordingly 
+cp interfaces /etc/network/interfaces
+#Restart the interfaces
+ifdown eth2 && ifup eth2
+ifdown br-ex && ifup br-ex
+#continue with network services restart
 service neutron-server restart
-service neutron-plugin-linuxbridge-agent restart
+service openvswitch-switch restart
+service neutron-plugin-openvswitch-agent restart
 service neutron-dhcp-agent restart
 service neutron-metadata-agent restart
 service neutron-l3-agent restart
@@ -395,4 +424,3 @@ service apache2 reload
 source admin-openrc.sh
 nova service-list
 neutron agent-list
-
