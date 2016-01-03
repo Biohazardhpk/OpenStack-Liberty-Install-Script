@@ -3,10 +3,11 @@
 echo Hello, Please insert the Controller management IP address!
 read varmanagIPcon
 sed -i "s/10.0.0.11/$varmanagIPcon/g" 2Controller.sh
+echo Your management interface IP  address was set to $varmanagIPcon
 echo Hello, Please insert the Compute management IP address!
 read varmanagIPcom
 sed -i "s/10.0.0.11/$varmanagIPcom/g" 2Compute.sh
-echo Your management interface IP  address was set to $varmanagIP
+echo Your management interface IP  address was set to $varmanagIPcom
 echo Hello, Please insert the mysql root pass!
 read varmysqlrpass
 sed -i "s/stack\/$varmysqlrpass\/g" 2Controller.sh
