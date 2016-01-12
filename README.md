@@ -336,7 +336,7 @@ ___
 
  Run the second script:
 
-    ./2Controller
+    ./2Compute
 
 Go have another beer! Come back in 10 minutes!
 If everything goes well after the installation you should enter in the Controller node:
