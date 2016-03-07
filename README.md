@@ -399,7 +399,7 @@ In my case are the following:
          10.3.3.1
 
 - After the script finishes you can access the two instances from the console inside Horizon (make a PortFowarding rule for it on the NAT network in VMware)
-- The public instace can also be accessed trough ssh from your pc.
+- The public instance can also be accessed trough ssh from your pc.
 - The credentials for the two instances are: cirros/cubswin:)
 
 # This tutorial will be continued with:
