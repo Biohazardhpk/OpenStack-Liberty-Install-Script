@@ -1,6 +1,6 @@
 # To install just download the files provided and follow the guide.
 
-# Welcome to the OpenStack-Liberty-Script install wiki! (this installation is not following the official documentation all the way the SDN inside OpenStack is using GRE with OVS)
+# Welcome to the OpenStack-Liberty-Script install wiki! (this installation is not following the official documentation all the way the NFV inside OpenStack is using GRE with OVS)
 ## Necessary software
 - [VMware Workstation](https://www.vmware.com/products/workstation)
 - [MobaXterm](http://mobaxterm.mobatek.net/download.html)
